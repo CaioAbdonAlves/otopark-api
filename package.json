@@ -1,0 +1,36 @@
+{
+  "name": "otopark-api",
+  "version": "1.0.0",
+  "description": "API do sistema de gerenciamento de estacionamentos",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "nodemon ./index.js localhost:6000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaioAbdonAlves/otopark-api.git"
+  },
+  "keywords": [
+    "estacionamento",
+    "gerenciamento",
+    "api"
+  ],
+  "author": "Caio Abdon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CaioAbdonAlves/otopark-api/issues"
+  },
+  "homepage": "https://github.com/CaioAbdonAlves/otopark-api#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
