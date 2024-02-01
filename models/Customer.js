@@ -17,7 +17,11 @@ const Customer = mongoose.model("Customer", new Schema({
         type: Array,
         required: true
     },
-    parking: Object
+    parking: {
+        type: Schema.Types.ObjectId,
+        ref: 'Parking',
+        required: true
+    }
 }, {timestamps: true}));
 
 module.exports = Customer;
