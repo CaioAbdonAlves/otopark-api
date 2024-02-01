@@ -22,15 +22,20 @@ const Parking = mongoose.model("Parking", new Schema({
         type: Boolean,
         default: true
     },
-    vacancy: {
-        type: Array,
+    vacancy: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Vacancy',
         required: true
-    },
+    }],
     owner: {
-        type: Object,
+        type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
-    employee: Object,
+    employee: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     loose: {
         fixedTime: {type: Number},
         overtime: {type: Number},
