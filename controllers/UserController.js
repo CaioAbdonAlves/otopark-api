@@ -1,9 +1,11 @@
 const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
 const User = require('../models/User.js');
 const Parking = require('../models/Parking.js');
 const { default: mongoose } = require('mongoose');
 
 const createUserToken = require("../helpers/create-user-token.js");
+const getToken = require('../helpers/get-token.js');
 
 module.exports = class UserController {
     static async register(req, res) {
@@ -110,5 +112,24 @@ module.exports = class UserController {
             res.status(500).json({message: "Ocorreu um erro.", error});
             return;
         }
+    }
+
+    static async checkUser(req, res) {
+        let currentUser;
+
+        if(req.headers.authorization) {
+
+            const token = getToken(req);
+            const decoded = jwt.verify(token, process.env.SECRET);
+
+            currentUser = await User.findById(decoded.id);
+
+            currentUser.password = undefined;
+
+        } else {
+            currentUser = null;
+        }
+
+        res.status(200).json(currentUser);
     }
 }
