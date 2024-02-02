@@ -3,6 +3,8 @@ const User = require('../models/User.js');
 const Parking = require('../models/Parking.js');
 const { default: mongoose } = require('mongoose');
 
+const createUserToken = require("../helpers/create-user-token.js");
+
 module.exports = class UserController {
     static async register(req, res) {
         const { type, name, email, password, confirmpassword, parking  } = req.body;
@@ -57,7 +59,7 @@ module.exports = class UserController {
         try {
             const newUser = await user.save();
 
-            newUser.type == "Owner" && res.json({message: "Usuário cadastrado com sucesso!", user: newUser});
+            newUser.type == "Owner" && await createUserToken(req, res, newUser);
 
             await Parking.updateOne(
                 {_id: new mongoose.Types.ObjectId(parking)},
@@ -68,9 +70,44 @@ module.exports = class UserController {
                 }
             );
             
-            res.status(200).json({message: "Funcionário cadastrado com sucesso!", user: newUser})
+            await createUserToken(req, res, newUser);
         } catch(error) {
             res.status(500).json({message: error});
+            return;
+        }
+    }
+
+    static async login(req, res) {
+        const { email, password } = req.body;
+
+        if(!email) {
+            res.status(422).json({message: "Preencha o campo e-mail!"});
+            return;
+        }
+
+        if(!password) {
+            res.status(422).json({message: "Preencha o campo senha!"});
+            return;
+        }
+
+        const userExists = await User.findOne({email: email});
+
+        if(!userExists) {
+            res.status(422).json({message: "E-mail ou senha inválidos!"});
+            return;
+        }
+
+        const passwordMatch = bcrypt.compareSync(password, userExists.password);
+
+        if(!passwordMatch) {
+            res.status(422).json({message: "E-mail ou senha inválidos!"});
+            return;
+        }
+
+        try {
+            await createUserToken(req, res, userExists);
+        } catch(error) {
+            res.status(500).json({message: "Ocorreu um erro.", error});
             return;
         }
     }
